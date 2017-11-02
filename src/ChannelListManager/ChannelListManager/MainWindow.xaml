@@ -1,0 +1,26 @@
+<Window x:Class="ChannelListManager.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:ChannelListManager"
+        xmlns:viewModels="clr-namespace:ChannelListManager.ViewModels"
+        mc:Ignorable="d"
+        d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
+        Title="MainWindow" Height="350" Width="525">
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto"/>
+			<RowDefinition Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<StackPanel Orientation="Horizontal">
+			<Button Command="{Binding ReadChannelMapFileCommand}" Margin="0 0 10 0">Open</Button>
+			<Button Margin="0 0 10 0">Delete Selected</Button>
+			<Button Margin="0 0 10 0">Save</Button>
+		</StackPanel>
+
+		<ListView Grid.Row="1"></ListView>
+
+	</Grid>
+</Window>
