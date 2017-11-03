@@ -5,156 +5,35 @@ namespace ChannelListManager.FileModels
 	[System.Xml.Serialization.XmlType(AnonymousType = true)]
 	public class ChannelMapChannelSetup
 	{
-
-		private string satelliteNameField;
-
-		private ushort channelNumberField;
-
-		private string channelNameField;
-
-		private byte channelLockField;
-
-		private byte userModifiedNameField;
-
-		private ushort logoIDField;
-
-		private byte userModifiedLogoField;
-
-		private byte logoLockField;
-
-		private byte userHiddenField;
-
-		private byte favoriteNumberField;
+		[System.Xml.Serialization.XmlAttribute]
+		public string SatelliteName { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public string SatelliteName
-		{
-			get
-			{
-				return satelliteNameField;
-			}
-			set
-			{
-				satelliteNameField = value;
-			}
-		}
+		public ushort ChannelNumber { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort ChannelNumber
-		{
-			get
-			{
-				return channelNumberField;
-			}
-			set
-			{
-				channelNumberField = value;
-			}
-		}
+		public string ChannelName { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public string ChannelName
-		{
-			get
-			{
-				return channelNameField;
-			}
-			set
-			{
-				channelNameField = value;
-			}
-		}
+		public byte ChannelLock { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte ChannelLock
-		{
-			get
-			{
-				return channelLockField;
-			}
-			set
-			{
-				channelLockField = value;
-			}
-		}
+		public byte UserModifiedName { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte UserModifiedName
-		{
-			get
-			{
-				return userModifiedNameField;
-			}
-			set
-			{
-				userModifiedNameField = value;
-			}
-		}
+		public ushort LogoID { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort LogoID
-		{
-			get
-			{
-				return logoIDField;
-			}
-			set
-			{
-				logoIDField = value;
-			}
-		}
+		public byte UserModifiedLogo { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte UserModifiedLogo
-		{
-			get
-			{
-				return userModifiedLogoField;
-			}
-			set
-			{
-				userModifiedLogoField = value;
-			}
-		}
+		public byte LogoLock { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte LogoLock
-		{
-			get
-			{
-				return logoLockField;
-			}
-			set
-			{
-				logoLockField = value;
-			}
-		}
+		public byte UserHidden { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte UserHidden
-		{
-			get
-			{
-				return userHiddenField;
-			}
-			set
-			{
-				userHiddenField = value;
-			}
-		}
-
-		[System.Xml.Serialization.XmlAttribute]
-		public byte FavoriteNumber
-		{
-			get
-			{
-				return favoriteNumberField;
-			}
-			set
-			{
-				favoriteNumberField = value;
-			}
-		}
+		public byte FavoriteNumber { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
 		public byte Scramble { get; set; }

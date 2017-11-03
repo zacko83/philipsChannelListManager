@@ -17,6 +17,7 @@ namespace ChannelListManager.ViewModels
 		public ICommand DeleteSelectedCommand { get; }
 		private ChannelMap ChannelMap { get; set; }
 		public ObservableCollection<ChannelViewModel> Channels { get; }  = new ObservableCollection<ChannelViewModel>();
+		private const string DEFAULT_FILE = @"d:\git\github\philipsChannelListManager\tst\DVBS.xml";
 
 		public SortCriteria SortCriteria
 		{
@@ -31,14 +32,15 @@ namespace ChannelListManager.ViewModels
 
 		public MainWindowViewModel()
 		{
-			ReadChannelMapFileCommand = new RelayCommand(ReadFile);
+			ReadChannelMapFileCommand = new RelayCommand(() => ReadFile());
 			SaveChannelMapFileCommand = new RelayCommand(SaveFile);
 			DeleteSelectedCommand = new RelayCommand(DeleteSelected);
+
+			ReadFile(DEFAULT_FILE);
 		}
 
 		private void DeleteSelected(object selected)
 		{
-			//var selectedItems = Channels.Where(x => x.IsSelected).ToList();
 			var selectedItems = ((IList)selected).Cast<ChannelViewModel>().ToList();
 			foreach (var item in selectedItems)
 				Channels.Remove(item);
@@ -51,7 +53,7 @@ namespace ChannelListManager.ViewModels
 				.OrderBy(x => x.Setup.ChannelNumber)
 				.ToArray();
 
-			byte i = 1;
+			ushort i = 1;
 			foreach (var channel in ChannelMap.Channel)
 			{
 				channel.Setup.ChannelNumber = i;
@@ -61,10 +63,18 @@ namespace ChannelListManager.ViewModels
 			ChannelFileHandler.SaveFile(ChannelMap);
 		}
 
-		private void ReadFile()
+		private void ReadFile(string filePath = null)
 		{
-			if (!ChannelFileHandler.TryReadFile(out ChannelMap channelMap))
+			ChannelMap channelMap;
+			if (string.IsNullOrWhiteSpace(filePath))
+			{
+				if (!ChannelFileHandler.TryReadFile(out channelMap))
+					return;
+			}
+			else if (!ChannelFileHandler.TryDeserialize(filePath, out channelMap))
+			{
 				return;
+			}
 
 			ChannelMap = channelMap;
 
@@ -98,13 +108,5 @@ namespace ChannelListManager.ViewModels
 			foreach (var item in orderedItems)
 				Channels.Add(item);
 		}
-	}
-
-	internal enum SortCriteria
-	{
-		ChannelNumber,
-		ChannelName,
-		ServiceType,
-		SatelliteName,
 	}
 }

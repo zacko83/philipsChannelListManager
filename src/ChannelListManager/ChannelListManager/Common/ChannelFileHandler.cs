@@ -14,38 +14,36 @@ namespace ChannelListManager.Common
 		public static bool TryReadFile(out ChannelMap channelMap)
 		{
 			channelMap = null;
-			string fileContent = null;
 			var openFileDialog = new OpenFileDialog();
 			if (openFileDialog.ShowDialog() != true)
 				return false;
 
-			if (!File.Exists(openFileDialog.FileName))
-			{
-				MessageBox.Show("File not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
-				return false;
-			}
+			if (File.Exists(openFileDialog.FileName))
+				return TryDeserialize(openFileDialog.FileName, out channelMap);
 
-			fileContent = File.ReadAllText(openFileDialog.FileName);
-
-			try
-			{
-				channelMap = Deserialize(fileContent);
-				return true;
-			}
-			catch (Exception)
-			{
-				return false;
-			}
+			MessageBox.Show("File not found.", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+			return false;
 		}
 
-		private static ChannelMap Deserialize(string fileContent)
+		public static bool TryDeserialize(string filePath, out ChannelMap channelMap)
 		{
-			var serializer = new XmlSerializer(typeof(ChannelMap));
-			using (var stream = new StringReader(fileContent))
-			using (var reader = XmlReader.Create(stream))
+			channelMap = null;
+			try
 			{
-				return (ChannelMap)serializer.Deserialize(reader);
+				var fileContent = File.ReadAllText(filePath);
+
+				var serializer = new XmlSerializer(typeof(ChannelMap));
+				using (var stream = new StringReader(fileContent))
+				using (var reader = XmlReader.Create(stream))
+					channelMap = (ChannelMap) serializer.Deserialize(reader);
 			}
+			catch (Exception e)
+			{
+				MessageBox.Show($"Error reading file: {e}", "Error", MessageBoxButton.OK, MessageBoxImage.Error);
+				return false;
+			}
+
+			return true;
 		}
 
 		public static void SaveFile(ChannelMap channelMap)
