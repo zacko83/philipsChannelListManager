@@ -5,22 +5,52 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:ChannelListManager"
         xmlns:viewModels="clr-namespace:ChannelListManager.ViewModels"
+        xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
         d:DataContext="{d:DesignInstance viewModels:MainWindowViewModel}"
         Title="MainWindow" Height="350" Width="525">
+	
+	<Window.Resources>
+		<ObjectDataProvider x:Key="SortCriteria" MethodName="GetValues" ObjectType="{x:Type sys:Enum}">
+			<ObjectDataProvider.MethodParameters>
+				<x:Type TypeName="viewModels:SortCriteria" />
+			</ObjectDataProvider.MethodParameters>
+		</ObjectDataProvider>
+	</Window.Resources>
+	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto"/>
 			<RowDefinition Height="*"/>
 		</Grid.RowDefinitions>
-		
-		<StackPanel Orientation="Horizontal">
-			<Button Command="{Binding ReadChannelMapFileCommand}" Margin="0 0 10 0">Open</Button>
-			<Button Margin="0 0 10 0">Delete Selected</Button>
-			<Button Margin="0 0 10 0">Save</Button>
+
+		<StackPanel Orientation="Horizontal" Margin="0 5 0 5">
+			<Button Command="{Binding ReadChannelMapFileCommand}" Margin="10 0 10 0">Open</Button>
+			<Button Command="{Binding DeleteSelectedCommand}" CommandParameter="{Binding SelectedItems, ElementName=ChannelListView}" Margin="0 0 10 0">Delete Selected</Button>
+			<Button Command="{Binding SaveChannelMapFileCommand}" Margin="0 0 10 0">Save</Button>
+			<ComboBox SelectedValue="{Binding SortCriteria}" ItemsSource="{Binding Source={StaticResource SortCriteria}}"/>
 		</StackPanel>
 
-		<ListView Grid.Row="1"></ListView>
+		<ListView
+			Name="ChannelListView"
+			Grid.Row="1"
+			SelectionMode="Extended"
+			ItemsSource="{Binding Channels}">
+			<ListView.ItemContainerStyle>
+				<Style TargetType="{x:Type ListViewItem}">
+					<Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
+				</Style>
+			</ListView.ItemContainerStyle>
+			<ListView.View>
+				<GridView>
+					<GridView.Columns>
+						<GridViewColumn DisplayMemberBinding="{Binding Number}">Number</GridViewColumn>
+						<GridViewColumn DisplayMemberBinding="{Binding Name}">Name</GridViewColumn>
+						<GridViewColumn DisplayMemberBinding="{Binding ServiceType}" Width="100">Type</GridViewColumn>
+					</GridView.Columns>
+				</GridView>
+			</ListView.View>
+		</ListView>
 
 	</Grid>
 </Window>

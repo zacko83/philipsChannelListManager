@@ -57,8 +57,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Common\ChannelFileHandler.cs" />
     <Compile Include="Common\RelayCommand.cs" />
+    <Compile Include="FileModels\ChannelMap.cs" />
+    <Compile Include="FileModels\ChannelMapChannel.cs" />
+    <Compile Include="FileModels\ChannelMapChannelBroadcast.cs" />
+    <Compile Include="FileModels\ChannelMapChannelSetup.cs" />
+    <Compile Include="ViewModels\ChannelViewModel.cs" />
     <Compile Include="ViewModels\MainWindowViewModel.cs" />
+    <Compile Include="ViewModels\ViewModelBase.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
