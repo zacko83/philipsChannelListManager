@@ -24,7 +24,7 @@ namespace ChannelListManager.ViewModels
 		public ObservableCollection<ChannelViewModel> ViewChannels { get; }  = new ObservableCollection<ChannelViewModel>();
 		private readonly ObservableCollection<ChannelViewModel> _channels = new ObservableCollection<ChannelViewModel>();
 		private string _sidFilter;
-		private const string DEFAULT_FILE = @"d:\git\github\philipsChannelListManager\tst\DVBS.7.xml";
+		private const string DEFAULT_FILE = @"d:\git\github\philipsChannelListManager\tst\DVBS.9.xml";
 
 		public string FilterText
 		{
@@ -153,17 +153,16 @@ namespace ChannelListManager.ViewModels
 
 		private void SaveFile()
 		{
-			ChannelMap.Channel = _channels
-				.Select(x => x.Channel)
-				.OrderBy(x => x.Setup.ChannelNumber)
-				.ToArray();
+			var sortedChannels = _channels
+				.OrderBy(x => x.Number);
 
 			int i = 1;
-			foreach (var channel in ChannelMap.Channel)
-			{
-				channel.Setup.ChannelNumber = i;
-				i++;
-			}
+			foreach (var channel in sortedChannels)
+				channel.Number = i++;
+
+			ChannelMap.Channel = sortedChannels
+				.Select(x => x.Channel)
+				.ToArray();
 
 			ChannelFileHandler.SaveFile(ChannelMap);
 		}
