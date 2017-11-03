@@ -9,33 +9,33 @@ namespace ChannelListManager.FileModels
 		public string SatelliteName { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort ChannelNumber { get; set; }
+		public int ChannelNumber { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
 		public string ChannelName { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte ChannelLock { get; set; }
+		public int ChannelLock { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte UserModifiedName { get; set; }
+		public int UserModifiedName { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort LogoID { get; set; }
+		public int LogoID { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte UserModifiedLogo { get; set; }
+		public int UserModifiedLogo { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte LogoLock { get; set; }
+		public int LogoLock { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte UserHidden { get; set; }
+		public int UserHidden { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte FavoriteNumber { get; set; }
+		public int FavoriteNumber { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte Scramble { get; set; }
+		public int Scramble { get; set; }
 	}
 }

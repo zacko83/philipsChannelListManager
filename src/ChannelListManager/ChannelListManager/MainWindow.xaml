@@ -3,7 +3,6 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:ChannelListManager"
         xmlns:viewModels="clr-namespace:ChannelListManager.ViewModels"
         xmlns:sys="clr-namespace:System;assembly=mscorlib"
         mc:Ignorable="d"
@@ -27,26 +26,43 @@
 		<StackPanel Orientation="Horizontal" Margin="0 5 0 5">
 			<Button Command="{Binding ReadChannelMapFileCommand}" Margin="10 0 10 0">Open</Button>
 			<Button Command="{Binding DeleteSelectedCommand}" CommandParameter="{Binding SelectedItems, ElementName=ChannelListView}" Margin="0 0 10 0">Delete Selected</Button>
+			<Button Command="{Binding DeleteUnselectedCommand}" CommandParameter="{Binding SelectedItems, ElementName=ChannelListView}" Margin="0 0 10 0">Delete Unselected</Button>
 			<Button Command="{Binding SaveChannelMapFileCommand}" Margin="0 0 10 0">Save</Button>
-			<ComboBox SelectedValue="{Binding SortCriteria}" ItemsSource="{Binding Source={StaticResource SortCriteria}}"/>
+			<ComboBox SelectedValue="{Binding SortCriteria}" ItemsSource="{Binding Source={StaticResource SortCriteria}}" Margin="0 0 10 0"/>
+			<Label>NameFilter: </Label><TextBox DockPanel.Dock="Right" Width="100" Text="{Binding FilterText, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+			<Label>SID Filter: </Label>
+			<TextBox DockPanel.Dock="Right" Width="100" Text="{Binding SIDFilter, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" Margin="0 0 10 0" />
+			<Button Command="{Binding MoveUpCommand}" CommandParameter="{Binding SelectedItems, ElementName=ChannelListView}" Margin="0 0 10 0">Up</Button>
+			<Button Command="{Binding MoveDownCommand}" CommandParameter="{Binding SelectedItems, ElementName=ChannelListView}" Margin="0 0 10 0">Down</Button>
 		</StackPanel>
 
 		<ListView
 			Name="ChannelListView"
 			Grid.Row="1"
 			SelectionMode="Extended"
-			ItemsSource="{Binding Channels}">
-			<ListView.ItemContainerStyle>
-				<Style TargetType="{x:Type ListViewItem}">
-					<Setter Property="IsSelected" Value="{Binding Mode=TwoWay, Path=IsSelected}"/>
-				</Style>
-			</ListView.ItemContainerStyle>
+			ItemsSource="{Binding ViewChannels}">
 			<ListView.View>
 				<GridView>
 					<GridView.Columns>
 						<GridViewColumn DisplayMemberBinding="{Binding Number}">Number</GridViewColumn>
 						<GridViewColumn DisplayMemberBinding="{Binding Name}">Name</GridViewColumn>
 						<GridViewColumn DisplayMemberBinding="{Binding ServiceType}" Width="100">Type</GridViewColumn>
+						<GridViewColumn DisplayMemberBinding="{Binding SID}" Width="100">Type</GridViewColumn>
+
+						<GridViewColumn Header="Mark" Width="40">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<CheckBox IsChecked="{Binding Path=IsSelected, Mode=TwoWay}"/>
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
+						<GridViewColumn Header="Fav" Width="50">
+							<GridViewColumn.CellTemplate>
+								<DataTemplate>
+									<TextBox  Width="30" Text="{Binding Favourite, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+								</DataTemplate>
+							</GridViewColumn.CellTemplate>
+						</GridViewColumn>
 					</GridView.Columns>
 				</GridView>
 			</ListView.View>

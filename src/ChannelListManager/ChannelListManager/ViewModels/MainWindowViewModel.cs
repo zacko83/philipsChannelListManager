@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Input;
 using ChannelListManager.Common;
@@ -12,12 +13,38 @@ namespace ChannelListManager.ViewModels
 	internal class MainWindowViewModel : ViewModelBase<MainWindowViewModel>
 	{
 		private SortCriteria _sortCriteria;
+		private string _filterText;
 		public ICommand ReadChannelMapFileCommand { get; }
 		public ICommand SaveChannelMapFileCommand { get; }
 		public ICommand DeleteSelectedCommand { get; }
+		public ICommand DeleteUnselectedCommand { get; }
+		public ICommand MoveUpCommand { get; }
+		public ICommand MoveDownCommand { get; }
 		private ChannelMap ChannelMap { get; set; }
-		public ObservableCollection<ChannelViewModel> Channels { get; }  = new ObservableCollection<ChannelViewModel>();
-		private const string DEFAULT_FILE = @"d:\git\github\philipsChannelListManager\tst\DVBS.xml";
+		public ObservableCollection<ChannelViewModel> ViewChannels { get; }  = new ObservableCollection<ChannelViewModel>();
+		private readonly ObservableCollection<ChannelViewModel> _channels = new ObservableCollection<ChannelViewModel>();
+		private string _sidFilter;
+		private const string DEFAULT_FILE = @"d:\git\github\philipsChannelListManager\tst\DVBS.7.xml";
+
+		public string FilterText
+		{
+			get => _filterText;
+			set
+			{
+				SetProperty(ref _filterText, value);
+				FilterList(_filterText);
+			}
+		}
+
+		public string SIDFilter
+		{
+			get => _sidFilter;
+			set
+			{
+				SetProperty(ref _sidFilter, value);
+				FilterSids(_sidFilter);
+			}
+		}
 
 		public SortCriteria SortCriteria
 		{
@@ -35,25 +62,103 @@ namespace ChannelListManager.ViewModels
 			ReadChannelMapFileCommand = new RelayCommand(() => ReadFile());
 			SaveChannelMapFileCommand = new RelayCommand(SaveFile);
 			DeleteSelectedCommand = new RelayCommand(DeleteSelected);
-
+			DeleteUnselectedCommand = new RelayCommand(DeleteUnselected);
+			MoveDownCommand = new RelayCommand(MoveDown);
+			MoveUpCommand = new RelayCommand(MoveUp);
 			ReadFile(DEFAULT_FILE);
+		}
+
+		private void MoveUp(object selected)
+		{
+			var selectedItems = ((IList)selected).Cast<ChannelViewModel>().ToList();
+
+			foreach (var item in selectedItems)
+			{
+				int oldIndex = ViewChannels.IndexOf(item);
+				if (oldIndex <= 0)
+					continue;
+
+				ViewChannels.Move(oldIndex, --oldIndex);
+			}
+
+			int i = 1;
+			foreach (var channel in ViewChannels)
+				channel.Number = i++;
+		}
+
+		private void MoveDown(object selected)
+		{
+			var selectedItems = ((IList)selected).Cast<ChannelViewModel>().ToList();
+
+			foreach (var item in selectedItems)
+			{
+				int oldIndex = ViewChannels.IndexOf(item);
+				if (oldIndex >= ViewChannels.IndexOf(ViewChannels.Last()))
+					continue;
+
+				ViewChannels.Move(oldIndex, ++oldIndex);
+			}
+
+			int i = 1;
+			foreach (var channel in ViewChannels)
+				channel.Number = i++;
+		}
+
+		private void DeleteUnselected(object selected)
+		{
+			var selectedItems = ((IList)selected).Cast<ChannelViewModel>().ToList();
+			_channels.Clear();
+			ViewChannels.Clear();
+			foreach (var item in selectedItems)
+			{
+				_channels.Add(item);
+				ViewChannels.Add(item);
+			}
+		}
+
+		private void FilterList(string filterText)
+		{
+			ViewChannels.Clear();
+			foreach (var channel in _channels)
+			{
+				if (string.IsNullOrWhiteSpace(filterText) ||channel.Name.ToUpperInvariant().Contains(filterText.ToUpperInvariant()))
+					ViewChannels.Add(channel);
+			}
+		}
+
+		private void FilterSids(string sidFilter)
+		{
+			var sids = sidFilter
+				.Split(new[] { "," }, StringSplitOptions.RemoveEmptyEntries)
+				.Select(int.Parse)
+				.ToList();
+
+			ViewChannels.Clear();
+			foreach (var channel in _channels)
+			{
+				if (sids.Count == 0 || sids.Contains(channel.SID))
+					ViewChannels.Add(channel);
+			}
 		}
 
 		private void DeleteSelected(object selected)
 		{
 			var selectedItems = ((IList)selected).Cast<ChannelViewModel>().ToList();
 			foreach (var item in selectedItems)
-				Channels.Remove(item);
+			{
+				_channels.Remove(item);
+				ViewChannels.Remove(item);
+			}
 		}
 
 		private void SaveFile()
 		{
-			ChannelMap.Channel = Channels
+			ChannelMap.Channel = _channels
 				.Select(x => x.Channel)
 				.OrderBy(x => x.Setup.ChannelNumber)
 				.ToArray();
 
-			ushort i = 1;
+			int i = 1;
 			foreach (var channel in ChannelMap.Channel)
 			{
 				channel.Setup.ChannelNumber = i;
@@ -78,9 +183,14 @@ namespace ChannelListManager.ViewModels
 
 			ChannelMap = channelMap;
 
-			Channels.Clear();
+			_channels.Clear();
+			ViewChannels.Clear();
 			foreach (var channel in channelMap.Channel)
-				Channels.Add(new ChannelViewModel(channel));
+			{
+				var model = new ChannelViewModel(channel);
+				_channels.Add(model);
+				ViewChannels.Add(model);
+			}
 		}
 
 		private void ReorderChannels()
@@ -89,24 +199,24 @@ namespace ChannelListManager.ViewModels
 			switch (SortCriteria)
 			{
 				case SortCriteria.ChannelNumber:
-					orderedItems = Channels.OrderBy(x => x.Number).ToList();
+					orderedItems = ViewChannels.OrderBy(x => x.Number).ToList();
 					break;
 				case SortCriteria.ChannelName:
-					orderedItems = Channels.OrderBy(x => x.Name).ToList();
+					orderedItems = ViewChannels.OrderBy(x => x.Name).ToList();
 					break;
 				case SortCriteria.ServiceType:
-					orderedItems = Channels.OrderBy(x => x.ServiceType).ToList();
+					orderedItems = ViewChannels.OrderBy(x => x.ServiceType).ToList();
 					break;
 				case SortCriteria.SatelliteName:
-					orderedItems = Channels.OrderBy(x => x.SatelliteName).ToList();
+					orderedItems = ViewChannels.OrderBy(x => x.SatelliteName).ToList();
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
 
-			Channels.Clear();
+			ViewChannels.Clear();
 			foreach (var item in orderedItems)
-				Channels.Add(item);
+				ViewChannels.Add(item);
 		}
 	}
 }

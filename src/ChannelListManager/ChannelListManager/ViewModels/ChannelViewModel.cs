@@ -14,6 +14,7 @@ namespace ChannelListManager.ViewModels
 	internal sealed class ChannelViewModel : ViewModelBase<ChannelViewModel>
 	{
 		private bool _isSelected;
+		private int _favourite;
 		public ChannelMapChannel Channel { get; }
 
 		public bool IsSelected
@@ -22,10 +23,30 @@ namespace ChannelListManager.ViewModels
 			set => SetProperty(ref _isSelected, value);
 		}
 
-		public int Number => Channel.Setup.ChannelNumber;
+		public int Number
+		{
+			get => Channel.Setup.ChannelNumber;
+			set
+			{
+				Channel.Setup.ChannelNumber = value;
+				OnPropertyChanged();
+			}
+		}
+
 		public string Name => TranslateName(Channel.Setup.ChannelName);
 		public string SatelliteName => TranslateName(Channel.Setup.SatelliteName);
+		public int SID => Channel.Broadcast.Sid;
 		public ServiceType ServiceType => (ServiceType)Channel.Broadcast.ServiceType;
+
+		public int Favourite
+		{
+			get => Channel.Setup.FavoriteNumber;
+			set
+			{
+				Channel.Setup.FavoriteNumber = value; 
+				SetProperty(ref _favourite, value);
+			}
+		}
 
 		public ChannelViewModel(ChannelMapChannel channel)
 		{

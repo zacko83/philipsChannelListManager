@@ -6,36 +6,36 @@ namespace ChannelListManager.FileModels
 	public class ChannelMapChannelBroadcast
 	{
 		[System.Xml.Serialization.XmlAttribute]
-		public byte ChannelType { get; set; }
+		public int ChannelType { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort Onid { get; set; }
+		public int Onid { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort Tsid { get; set; }
+		public int Tsid { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort Sid { get; set; }
+		public int Sid { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort Frequency { get; set; }
+		public int Frequency { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
 		public string Modulation { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte ServiceType { get; set; }
+		public int ServiceType { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public ushort SymbolRate { get; set; }
+		public int SymbolRate { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte LNBNumber { get; set; }
+		public int LNBNumber { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte Polarization { get; set; }
+		public int Polarization { get; set; }
 
 		[System.Xml.Serialization.XmlAttribute]
-		public byte SystemHidden { get; set; }
+		public int SystemHidden { get; set; }
 	}
 }
